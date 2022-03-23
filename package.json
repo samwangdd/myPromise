@@ -1,0 +1,24 @@
+{
+  "name": "mypromise",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "typescript": "^4.6.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "npx tsc index.ts && node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/samwangdd/myPromise.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/samwangdd/myPromise/issues"
+  },
+  "homepage": "https://github.com/samwangdd/myPromise#readme"
+}
