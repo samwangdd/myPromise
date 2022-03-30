@@ -7,7 +7,7 @@ class MyPromise {
   value = null // 保存每次 resolve 结果
 
   constructor(fn) {
-    console.log("constructor", this)
+    console.log(`constructor ${count}`, this)
     // constructor MyPromise { callbacks: [], state: 'pending', value: null }
     // TODO: 经证实，下面想法错误，为什么？
     // 关键：每次初始化时，会将 this 指向上一个实例，这样才能够获得 callbacks
@@ -51,9 +51,19 @@ class MyPromise {
   // 初始化时只是 bind 绑定上下文，但是并没有执行
   // value 是 resolve 的值
   private _resolve(value) {
+    // 判断 resolve 的值是一个 promise 实例
+    if (value && (typeof value === "object" || typeof value === "function")) {
+      var then = value.then
+      if (typeof then === "function") {
+        // FIXME: 什么意思？？
+        // 绑定 this, 避免实际调用时改变 this
+        then.call(value, this._resolve.bind(this))
+        return
+      }
+    }
+
     console.log("_resolve")
     this.state = "fulfilled"
-    console.log("this._resolve", this.callbacks)
     // 保存上一个 promise 的返回值
     this.value = value
     // 第一次 resolve 拿到了第一个 then 的 callback
@@ -65,19 +75,27 @@ class MyPromise {
   }
 }
 
+// const pUserId = new MyPromise((resolve) => {
+//   mockAjax("getUserId", 1, function (result) {
+//     resolve(result)
+//   })
+// })
+
+const pUserName = new MyPromise((resolve) => {
+  console.log(111)
+  mockAjax("getUserName", 2, function (result) {
+    resolve(result)
+  })
+})
+
 let pro = new MyPromise((resolve) => {
-  // console.log("ready")
-  // resolve("5 sec")
-  // setTimeout(() => {
-  //   console.log("done")
-  //   resolve("5 sec")
-  // }, 2000)
-  mockAjax("getUserId", 2, function (res) {
+  mockAjax("getUserId", 1, function (res) {
     resolve(res)
   })
 })
   .then((res) => {
     console.log("then1: >>", res)
+    return pUserName
     return 333
   })
   .then((res) => console.log("then2: >>", res))
